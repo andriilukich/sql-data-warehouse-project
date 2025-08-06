@@ -22,12 +22,19 @@ Develop a modern data warehouse using SQL Server to consolidate sales data, enab
 
 ---
 
+## 🗂 Project Board
+
+You can view the project's task board and progress tracking on Notion:
+
+**🔗 [Data Warehouse Project – Task & Ticket Board](https://www.notion.so/Data-Warehouse-Project-2463a5ddcc3d8010bea7f634bd6522b5?source=copy_link)**
+
+This board includes all relevant development tasks, milestones, and documentation for the Data Warehouse and Analytics Project.
+
+---
+
 ## 🧱 Data Architecture
-
-The data architecture for this project follows Medallion Architecture **Bronze**, **Silver**, and **Gold** layers:
-
 ### High Level Architecture
-The data architecture for this project follows Medallion Architecture Bronze, Silver, and Gold layers:
+The data architecture for this project follows Medallion Architecture **Bronze**, **Silver**, and **Gold** layers:
 
 ![High Level Architecture](https://i.postimg.cc/wMPwM11M/Screenshot-2025-08-06-at-9-05-58-AM.png)
 
