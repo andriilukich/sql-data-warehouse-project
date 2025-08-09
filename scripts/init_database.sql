@@ -9,7 +9,13 @@ Script Purpose:
 
 WARNING:
     Running this script will drop the entire 'DataWarehouse' databse if it exists.
-    All data in the databse will be permanently deleted. Proceed with caution
+    This script creats a new database named 'DataWarehouse' after checking if it already exists.
+    If the database exists, it is dropped and recreated. Additionally, the script sets up three schemas
+    withing the database: 'bronze', 'silver', and 'gold'.
+
+WARNING:
+    Running this script will drop the entire 'DataWarehouse' database if it exists.
+    All data in the database will be permanently deleted. Proceed with caution
     and ensure you have proper backups before running this script.
 */
 
