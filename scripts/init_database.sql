@@ -17,7 +17,7 @@ WARNING:
 USE master;
 GO
 
--- Drop and recreate the 'DataWarehouse' databse 
+-- Drop and recreate the 'DataWarehouse' database 
 IF EXISTS (SELECT 1
 FROM sys.databases
 WHERE name = 'DataWarehouse')
