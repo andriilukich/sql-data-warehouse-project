@@ -10,7 +10,7 @@ Script Purpose:
 WARNING:
     Running this script will drop the entire 'DataWarehouse' databse if it exists.
     All data in the databse will be permanently deleted. Proceed with caution
-    and ensure you have proper backups before running this scrip.
+    and ensure you have proper backups before running this script.
 */
 
 
