@@ -51,6 +51,44 @@ The data architecture for this project follows Medallion Architecture **Bronze**
 
 ---
 
+## 🚀 Getting Started
+
+### Prerequisites
+- Docker and Docker Compose installed
+- Git (for cloning the repository)
+
+### Setup Instructions
+
+1. **Clone the repository**
+   ```bash
+   git clone <repository-url>
+   cd sql-data-warehouse-project
+   ```
+
+2. **Configure environment variables**
+   ```bash
+   cp .env.example .env
+   ```
+   Edit `.env` file and set your secure database password:
+   ```bash
+   MSSQL_SA_PASSWORD=your_secure_password_here
+   ```
+
+3. **Start the services**
+   ```bash
+   docker-compose up -d
+   ```
+
+4. **Verify the setup**
+   The SQL Server will be available at `localhost:1433`
+
+### Security Note
+- The `.env` file contains sensitive credentials and is excluded from version control
+- Never commit actual passwords to the repository
+- Use the `.env.example` file as a template for required environment variables
+
+---
+
 ### BI: Analytics & Reporting (Data Analytics)
 
 **Objective**  
