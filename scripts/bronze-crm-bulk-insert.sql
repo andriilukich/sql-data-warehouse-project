@@ -41,36 +41,76 @@ Note:
 */
 
 USE DataWarehouse;
+GO
 
--- Load Customer Information into Bronze Layer
--- Clear existing data and load fresh customer data from CRM system
-TRUNCATE TABLE bronze.crm_cust_info;
-BULK INSERT bronze.crm_cust_info
-FROM '/data/source_crm/cust_info.csv'
-WITH (
-    FIRSTROW = 2,           -- Skip header row
-    FIELDTERMINATOR = ',',  -- Comma-delimited CSV
-    TABLOCK                 -- Table lock for better performance
-)
+CREATE OR ALTER PROCEDURE bronze.load_bronze_crm
+AS
+BEGIN
+    DECLARE @start_time DATETIME, @end_time DATETIME;
+    BEGIN TRY
+        PRINT '======================================================';
+        PRINT 'Loading Bronze Layer (CRM)';
+        PRINT '======================================================';
 
--- Load Product Information into Bronze Layer  
--- Clear existing data and load fresh product data from CRM system
-TRUNCATE TABLE bronze.crm_prd_info;
-BULK INSERT bronze.crm_prd_info
-FROM '/data/source_crm/prd_info.csv'
-WITH (
-    FIRSTROW = 2,           -- Skip header row
-    FIELDTERMINATOR = ',',  -- Comma-delimited CSV
-    TABLOCK                 -- Table lock for better performance
-)
+        -- Load Customer Information into Bronze Layer
+        -- Clear existing data and load fresh customer data from CRM system
+        SET @start_time = GETDATE()
+        PRINT '>> Truncating Table: bronze.crm_cust_info';
+        TRUNCATE TABLE bronze.crm_cust_info;
 
--- Load Sales Details into Bronze Layer
--- Clear existing data and load fresh sales transaction data from CRM system
-TRUNCATE TABLE bronze.crm_sales_details;
-BULK INSERT bronze.crm_sales_details
-FROM '/data/source_crm/sales_details.csv'
-WITH (
-    FIRSTROW = 2,           -- Skip header row
-    FIELDTERMINATOR = ',',  -- Comma-delimited CSV
-    TABLOCK                 -- Table lock
-)
+        PRINT '>> Inserting Data Into: bronze.crm_cust_info';
+        BULK INSERT bronze.crm_cust_info
+        FROM '/data/source_crm/cust_info.csv'
+        WITH (
+            FIRSTROW = 2,           -- Skip header row
+            FIELDTERMINATOR = ',',  -- Comma-delimited CSV
+            TABLOCK                 -- Table lock for better performance
+        )
+        SET @end_time = GETDATE()
+        PRINT '>> Load Duration: ' + CAST(DATEDIFF(SECOND, @start_time, @end_time) AS NVARCHAR) + ' seconds';
+        PRINT '>> ---------------------------------------------------';
+
+        -- Load Product Information into Bronze Layer  
+        -- Clear existing data and load fresh product data from CRM system
+        SET @start_time = GETDATE()
+        PRINT '>> Truncating Table: bronze.crm_prd_info';
+        TRUNCATE TABLE bronze.crm_prd_info;
+
+        PRINT '>> Inserting Data Into: bronze.crm_prd_info';
+        BULK INSERT bronze.crm_prd_info
+        FROM '/data/source_crm/prd_info.csv'
+        WITH (
+            FIRSTROW = 2,           -- Skip header row
+            FIELDTERMINATOR = ',',  -- Comma-delimited CSV
+            TABLOCK                 -- Table lock for better performance
+        )
+        SET @end_time = GETDATE()
+        PRINT '>> Load Duration: ' + CAST(DATEDIFF(SECOND, @start_time, @end_time) AS NVARCHAR) + ' seconds';
+        PRINT '>> ---------------------------------------------------';
+
+        -- Load Sales Details into Bronze Layer
+        -- Clear existing data and load fresh sales transaction data from CRM system
+        SET @start_time = GETDATE()
+        PRINT '>> Truncating Table: bronze.crm_sales_details';
+        TRUNCATE TABLE bronze.crm_sales_details;
+
+        PRINT '>> Inserting Data Into: bronze.crm_sales_details';
+        BULK INSERT bronze.crm_sales_details
+        FROM '/data/source_crm/sales_details.csv'
+        WITH (
+            FIRSTROW = 2,           -- Skip header row
+            FIELDTERMINATOR = ',',  -- Comma-delimited CSV
+            TABLOCK                 -- Table lock
+        )
+        SET @end_time = GETDATE()
+        PRINT '>> Load Duration: ' + CAST(DATEDIFF(SECOND, @start_time, @end_time) AS NVARCHAR) + ' seconds';
+    END TRY
+    BEGIN CATCH
+        PRINT '*****************************************************'
+        PRINT 'ERROR OCCURRED DURING LOADING BRONZE LAYER (CRM)'
+        PRINT 'Error Message: ' + ERROR_MESSAGE();
+        PRINT 'Error Number: ' + CAST(ERROR_NUMBER() AS NVARCHAR(50));
+        PRINT 'Error State: ' + CAST(ERROR_STATE() AS NVARCHAR(50));
+        PRINT '*****************************************************'
+    END CATCH
+END;

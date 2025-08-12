@@ -41,36 +41,76 @@ Note:
 */
 
 USE DataWarehouse;
+GO
 
--- Load Customer Information into Bronze Layer
--- Clear existing data and load fresh customer data from ERP system
-TRUNCATE TABLE bronze.erp_cust_az12;
-BULK INSERT bronze.erp_cust_az12
-FROM '/data/source_erp/CUST_AZ12.csv'
-WITH (
-    FIRSTROW = 2,           -- Skip header row
-    FIELDTERMINATOR = ',',  -- Comma-delimited CSV
-    TABLOCK                 -- Table lock for better performance
-)
+CREATE OR ALTER PROCEDURE bronze.load_bronze_erp
+AS
+BEGIN
+    DECLARE @start_time DATETIME, @end_time DATETIME
+    BEGIN TRY
+        PRINT '======================================================';
+        PRINT 'Loading Bronze Layer (ERP)';
+        PRINT '======================================================';
+        -- Load Customer Information into Bronze Layer
+        -- Clear existing data and load fresh customer data from ERP system
 
--- Load Location Information into Bronze Layer  
--- Clear existing data and load fresh location data from ERP system
-TRUNCATE TABLE bronze.erp_loc_a101;
-BULK INSERT bronze.erp_loc_a101
-FROM '/data/source_erp/LOC_A101.csv'
-WITH (
-    FIRSTROW = 2,           -- Skip header row
-    FIELDTERMINATOR = ',',  -- Comma-delimited CSV
-    TABLOCK                 -- Table lock for better performance
-)
+        SET @start_time = GETDATE()
+        PRINT '>> Trancating Data Into: bronze.erp_cust_az12';
+        TRUNCATE TABLE bronze.erp_cust_az12;
 
--- Load Product Category Information into Bronze Layer
--- Clear existing data and load fresh product category data from ERP system
-TRUNCATE TABLE bronze.erp_px_cat_g1v2;
-BULK INSERT bronze.erp_px_cat_g1v2
-FROM '/data/source_erp/PX_CAT_G1V2.csv'
-WITH (
-    FIRSTROW = 2,           -- Skip header row
-    FIELDTERMINATOR = ',',  -- Comma-delimited CSV
-    TABLOCK                 -- Table lock for better performance
-)
+        PRINT '>> Inserting Data Into: bronze.erp_cust_az12';
+        BULK INSERT bronze.erp_cust_az12
+        FROM '/data/source_erp/CUST_AZ12.csv'
+        WITH (
+            FIRSTROW = 2,           -- Skip header row
+            FIELDTERMINATOR = ',',  -- Comma-delimited CSV
+            TABLOCK                 -- Table lock for better performance
+        )
+        SET @end_time = GETDATE()
+        PRINT '>> Load Duration: ' + CAST(DATEDIFF(SECOND, @start_time, @end_time) AS NVARCHAR) + ' seconds';
+        PRINT '>> ---------------------------------------------------';
+
+        -- Load Location Information into Bronze Layer  
+        -- Clear existing data and load fresh location data from ERP system
+        SET @start_time = GETDATE()
+        PRINT '>> Trancating Data Into: bronze.erp_loc_a101';
+        TRUNCATE TABLE bronze.erp_loc_a101;
+
+        PRINT '>> Inserting Data Into: bronze.erp_loc_a101';
+        BULK INSERT bronze.erp_loc_a101
+        FROM '/data/source_erp/LOC_A101.csv'
+        WITH (
+            FIRSTROW = 2,           -- Skip header row
+            FIELDTERMINATOR = ',',  -- Comma-delimited CSV
+            TABLOCK                 -- Table lock for better performance
+        )
+        SET @end_time = GETDATE()
+        PRINT '>> Load Duration: ' + CAST(DATEDIFF(SECOND, @start_time, @end_time) AS NVARCHAR) + ' seconds';
+        PRINT '>> ---------------------------------------------------';
+
+        -- Load Product Category Information into Bronze Layer
+        -- Clear existing data and load fresh product category data from ERP system
+        SET @start_time = GETDATE()
+        PRINT '>> Truncating Data From: bronze.erp_px_cat_g1v2';
+        TRUNCATE TABLE bronze.erp_px_cat_g1v2;
+
+        PRINT '>> Inserting Data Into: bronze.erp_px_cat_g1v2';
+        BULK INSERT bronze.erp_px_cat_g1v2
+        FROM '/data/source_erp/PX_CAT_G1V2.csv'
+        WITH (
+            FIRSTROW = 2,           -- Skip header row
+            FIELDTERMINATOR = ',',  -- Comma-delimited CSV
+            TABLOCK                 -- Table lock for better performance
+        )
+        SET @end_time = GETDATE()
+        PRINT '>> Load Duration: ' + CAST(DATEDIFF(SECOND, @start_time, @end_time) AS NVARCHAR) + ' seconds';
+    END TRY
+    BEGIN CATCH
+        PRINT '*****************************************************'
+        PRINT 'ERROR OCCURED DURING LOADING BRONZE LAYER (ERP)'
+        PRINT 'Error Message: ' + ERROR_MESSAGE();
+        PRINT 'Error Message: ' + CAST(ERROR_NUMBER() AS NVARCHAR);
+        PRINT 'Error Message: ' + CAST(ERROR_STATE() AS NVARCHAR);
+        PRINT '*****************************************************'
+    END CATCH
+END;
