@@ -62,10 +62,13 @@ BEGIN
         BULK INSERT bronze.erp_cust_az12
         FROM '/data/source_erp/CUST_AZ12.csv'
         WITH (
-            FIRSTROW = 2,           -- Skip header row
-            FIELDTERMINATOR = ',',  -- Comma-delimited CSV
-            TABLOCK                 -- Table lock for better performance
-        )
+                FORMAT = 'CSV',                 -- Specify CSV file format
+                FIRSTROW = 2,                   -- Skip header row
+                FIELDTERMINATOR = ',',          -- Comma-delimited CSV
+                ROWTERMINATOR = '0x0d0a',       -- Consume both CR and LF as row terminator
+                FIELDQUOTE = '"',               -- Handle quoted fields
+                TABLOCK                         -- Table lock for better performance
+        )   
         SET @end_time = GETDATE()
         PRINT '>> Load Duration: ' + CAST(DATEDIFF(SECOND, @start_time, @end_time) AS NVARCHAR) + ' seconds';
         PRINT '>> ---------------------------------------------------';
@@ -80,9 +83,12 @@ BEGIN
         BULK INSERT bronze.erp_loc_a101
         FROM '/data/source_erp/LOC_A101.csv'
         WITH (
-            FIRSTROW = 2,           -- Skip header row
-            FIELDTERMINATOR = ',',  -- Comma-delimited CSV
-            TABLOCK                 -- Table lock for better performance
+                FORMAT = 'CSV',                 -- Specify CSV file format
+                FIRSTROW = 2,                   -- Skip header row
+                FIELDTERMINATOR = ',',          -- Comma-delimited CSV
+                ROWTERMINATOR = '0x0d0a',       -- Consume both CR and LF as row terminator
+                FIELDQUOTE = '"',               -- Handle quoted fields
+                TABLOCK                         -- Table lock for better performance
         )
         SET @end_time = GETDATE()
         PRINT '>> Load Duration: ' + CAST(DATEDIFF(SECOND, @start_time, @end_time) AS NVARCHAR) + ' seconds';
@@ -98,9 +104,12 @@ BEGIN
         BULK INSERT bronze.erp_px_cat_g1v2
         FROM '/data/source_erp/PX_CAT_G1V2.csv'
         WITH (
-            FIRSTROW = 2,           -- Skip header row
-            FIELDTERMINATOR = ',',  -- Comma-delimited CSV
-            TABLOCK                 -- Table lock for better performance
+                FORMAT = 'CSV',                 -- Specify CSV file format
+                FIRSTROW = 2,                   -- Skip header row
+                FIELDTERMINATOR = ',',          -- Comma-delimited CSV
+                ROWTERMINATOR = '0x0d0a',       -- Consume both CR and LF as row terminator
+                FIELDQUOTE = '"',               -- Handle quoted fields
+                TABLOCK                         -- Table lock for better performance
         )
         SET @end_time = GETDATE()
         PRINT '>> Load Duration: ' + CAST(DATEDIFF(SECOND, @start_time, @end_time) AS NVARCHAR) + ' seconds';
