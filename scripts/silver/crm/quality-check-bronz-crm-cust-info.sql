@@ -66,7 +66,7 @@ SELECT
         ELSE 'n/a'
     END cst_marital_status,
     CASE
-        WHEN UPPER(TRIM(cst_gndr)) = 'F' THEN 'Femail'
+        WHEN UPPER(TRIM(cst_gndr)) = 'F' THEN 'Female'
         WHEN UPPER(TRIM(cst_gndr)) = 'M' THEN 'Male'
         ELSE 'n/a'
     END cst_gndr,
